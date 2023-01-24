@@ -11,8 +11,8 @@ router.post('/register', authController.register);
 // Connecter un agent
 router.post('/login', authController.login);
 
-// PUT
+// POST
 // Mettre à jour un agent
-router.put('/update', auth, authController.updateAgent);
+router.post('/update', auth, authController.updateAgent);
 
 module.exports = router;
