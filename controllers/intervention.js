@@ -15,7 +15,7 @@ exports.createIntervention = (req, res, next) => {
 
 exports.getAgentInterventions = (req, res, next) => {
     Intervention.findOne({numAgent: req.auth.numAgent})
-        .then(things => res.status(200).json(things))
+        .then(intervention => res.status(200).json(intervention))
         .catch(error => res.status(400).json({error}));
 }
 

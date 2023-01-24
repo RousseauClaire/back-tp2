@@ -20,7 +20,7 @@ exports.register = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    Agent.findOne({numAgent: req.body.numAgent})
+    Agent.findOne({numAgent: req.body.numAgent, grade: req.body.grade})
         .then(agent => {
             if (!agent) {
                 return res.status(401).json({message: "Agent introuvable"});
@@ -48,7 +48,18 @@ exports.login = (req, res, next) => {
 }
 
 exports.updateAgent = (req, res, next) => {
-    Agent.updateOne({numAgent: req.auth.numAgent}, {...req.body, numAgent: req.auth.numAgent})
-        .then(() => res.status(200).json({message : "Agent modifié"}))
+    if (req.body.numAgent && req.body.numAgent !== req.auth.numAgent) {
+        return res.status(401).json({message: "Pas autorisé, vous ne povez pas modifier un autre Agent"});
+    }
+    Agent.findOne({numAgent: req.auth.numAgent})
+        .then(agent => {
+            if (!agent) {
+                return res.status(401).json({message: "Pas autorisé"});
+            }
+            // Seul le grade est enregistré
+            Agent.updateOne({numAgent: req.auth.numAgent}, {grade: req.body.grade, numAgent: req.auth.numAgent})
+                .then(() => res.status(200).json({message: "Agent modifié"}))
+                .catch(error => res.status(400).json({error}));
+        })
         .catch(error => res.status(400).json({error}));
 }
